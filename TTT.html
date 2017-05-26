@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tic Tac Toe</title>
+    <style media="screen">
+      .btn {width: 50px;
+        height: 50px;
+        font-weight: bold;}
+    </style>
+  </head>
+  <body>
+    <h1>Tic Tac Toe</h1>
+    <h2>Shall we play a game?</h2>
+    <div id="div_board">
+      <table>
+      <tr>
+        <td><button type="button" boardIdx="0" id="btn0" class="btn"></button></td>
+        <td><button type="button" boardIdx="1" id="btn1" class="btn"></button></td>
+        <td><button type="button" boardIdx="2" id="btn2" class="btn"></button></td>
+      </tr>
+      <tr>
+          <td><button type="button" boardIdx="3" id="btn3" class="btn"></button></td>
+          <td><button type="button" boardIdx="4" id="btn4" class="btn"></button></td>
+          <td><button type="button" boardIdx="5" id="btn5" class="btn"></button></td>
+      </tr>
+      <tr>
+          <td><button type="button" boardIdx="6" id="btn6" class="btn"></button></td>
+          <td><button type="button" boardIdx="7" id="btn7" class="btn"></button></td>
+          <td><button type="button" boardIdx="8" id="btn8" class="btn"></button></td>
+      </tr>
+    </table>
+  </div>
+
+    <div id="reply_space"></div>
+    <button id="btn_play_again" hidden="true">Play Again?</button>
+
+<script type="text/javascript">
+const OO = "O";
+const COMPUTERWIN = "OOO";
+const HUMANWIN = "XXX";
+const XX = "X";
+const OPEN = "";
+//var options = [OO, XX];
+var board = [];
+for (var i = 0; i<9; i++) {
+  board[i] = OPEN;
+}
+
+var divBoard = document.getElementById("div_board");
+var btn0 = document.getElementById("btn0");
+var btn1 = document.getElementById("btn1");
+var btn2 = document.getElementById("btn2");
+var btn3 = document.getElementById("btn3");
+var btn4 = document.getElementById("btn4");
+var btn5 = document.getElementById("btn5");
+var btn6 = document.getElementById("btn6");
+var btn7 = document.getElementById("btn7");
+var btn8 = document.getElementById("btn8");
+var myReply = document.getElementById("reply_space");
+
+divBoard.addEventListener('click', function (evt) {
+  if (evt.target.tagName === "BUTTON") {
+    var myCell = evt.target;
+    var myPick = parseInt(evt.target.getAttribute("boardIdx"));
+    processChoice(myPick, myCell, XX);
+    console.log("cell pick: " + myPick);
+  }
+})
+
+function computerPlay () {
+  var computerGuess;
+  var x = document.querySelectorAll("button");
+  var choosing = true;
+  var element;
+  //console.log("in computer play with vars set");
+  while (choosing === true) {
+    // pick a cell
+    computerGuess = (Math.floor(Math.random() * 9)); // make a choice
+    for (var i = 0; i < x.length; i++) {
+      if (x[i].getAttribute("boardIdx") == computerGuess) {
+        element = x[i];
+      } // end if
+    } // end for
+    if ((board[computerGuess] == OPEN) || (choosing === true)) { // if choice is available, do the rest
+      processChoice(computerGuess, element, OO);
+      choosing = false; // set this here since choice was made.
+      console.log("value of choosing: " + choosing + " board index: " + computerGuess);
+      break;
+    } // end if to mark a cell
+  } // end while, choice made
+} // end function
+
+function processChoice(myChoice, myCell, myPlayer) {
+   console.log("choice = " + myChoice);
+   console.log("board value:" + board[myChoice] + ":close value");
+   if (board[myChoice] === OPEN) {
+        board[myChoice] = myPlayer;
+        myCell.innerHTML = myPlayer
+        if (winner()) {
+          myReply.innerHTML = "You have beaten me.  Will I dream?";
+        } else {
+          console.log("computer should play here");
+           computerPlay();
+        };
+   } else {
+     myReply.innerHTML = "Cheaters never prosper, pick an open square!";
+   } // end if for checking if cell was available
+} // end function
+
+function winner () {
+  // build & test 8 combinations
+  var myWinner = false;
+  var currState = [];
+  currState[0] = board[0] + board[1] + board[2];
+  currState[1] = board[3] + board[4] + board[5];
+  currState[2] = board[6] + board[7] + board[8];
+  currState[3] = board[0] + board[3] + board[6];
+  currState[4] = board[1] + board[4] + board[7];
+  currState[5] = board[2] + board[5] + board[8];
+  currState[6] = board[0] + board[4] + board[8];
+  currState[7] = board[6] + board[4] + board[2];
+  //while (!(myWinner)) {
+  for (var i = 0; i < currState.length; i++) {
+    console.log("current state in winner check: " + currState[i]);
+    if (currState[i] == COMPUTERWIN) {
+      myReply.innerHTML = "The computer has won again.  The only way to win is not to play.";
+      myWinner = true;
+      break;
+    } else if (currState[i] == HUMANWIN) {
+      myReply.innerHTML = "You have won - you would whup both the computer and Matthew Broderick.";
+      myWinner = true;
+      break;
+    } // end if
+  } // end for
+//} // end while
+  return myWinner;
+} // end function
+
+// btn0.addEventListener('click', function (evt) {
+//   console.log("made it into button 0");
+//   console.log("button0 text:" + btn0.innerHTML + ":close");
+//   if (btn0.innerHTML == OPEN) {
+//     board[0] = OO;
+//     btn0.innerHTML = XX;
+//     if !(winner()) {
+//       computerPlay();
+//     }
+//   } else {
+//
+//   }
+// });
+
+
+
+
+
+// divBoard.addEventListener('click', function (evt) {
+//   console.log("found click");
+//   console.log(evt);
+//     if (evt.target == divBoard.children[0]) {
+//     console.log("top left");
+//   }
+// });
+
+
+
+// var btn8 = document.getElementById("btn8");
+// btn8.addEventListener('click', function (evt) {
+//   btn8.innerHTML = "X";
+// });
+
+
+  // else if (evt.target == divBoard.children[1]) {
+  //   console.log("top center");
+  // }
+//});
+
+
+
+  // var btnPlayAgain = document.getElementById("btn_play_again");
+  //   var btn1 = document.getElementById("btn1");
+  //   btn0.innerHTML = "X";
+
+  //
+
+
+</script>
+  </body>
+</html>
